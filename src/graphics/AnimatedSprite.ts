@@ -1,4 +1,5 @@
 import type GameTime from "../GameTime.js";
+import Timer from "../Timer.js";
 import Vector from "../Vector.js";
 import Sprite from "./Sprite.js";
 import SpriteAnimation from "./SpriteAnimation.js";
@@ -12,8 +13,11 @@ export default class AnimatedSprite extends Sprite {
     
     override get width() { return super.width / this.columns; }
     override get height() { return super.height / this.rows; }
+    get playing() { return this.#timer.enabled; }
 
     #animations = new Map<string, SpriteAnimation>();
+    #timer = new Timer(0);
+
     constructor(texture: Texture, columns: number, rows: number);
     constructor(url: string, columns: number, rows: number);
 
@@ -21,6 +25,12 @@ export default class AnimatedSprite extends Sprite {
         super(src as Texture);
         this.columns = columns;
         this.rows = rows;
+        this.#timer.tick.add(this.timerOntick.bind(this));
+    }
+
+    timerOntick() {
+        if (this.currentAnimation != null)
+            this.currentAnimation.currentFrame ++;
     }
     
     add(name: string, start: number, frameCount: number, fps: number, loop = false) {
@@ -29,12 +39,20 @@ export default class AnimatedSprite extends Sprite {
 
     play(name: string) {
         this.currentAnimation = this.#animations.get(name) ?? null;
+        if (this.currentAnimation != null) {
+            this.#timer.interval = 1000 / this.currentAnimation.fps;
+            this.#timer.start();
+        }
+    }
+
+    pause() {
+        this.#timer.stop();
     }
 
     update(gameTime: GameTime) {
         if (this.currentAnimation === null)
             return;
-        this.currentAnimation.currentFrame ++;
+        this.#timer.update(gameTime);
     }
 
     draw(ctx: CanvasRenderingContext2D, origin?: Vector): void {
@@ -42,7 +60,7 @@ export default class AnimatedSprite extends Sprite {
             return;
         let globalFrame = this.currentAnimation.globalFrame;
         let position = new Vector(
-            globalFrame % this.columns, globalFrame / this.columns
+            globalFrame % this.columns, Math.floor(globalFrame / this.columns)
         );
         position.multiply(new Vector(this.width, this.height));
         ctx.drawImage(this.texture.data, position.x, position.y, 

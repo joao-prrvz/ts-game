@@ -5,6 +5,7 @@ export default class Timer {
     #lastFrame: number|null = null;
     interval: number;
     tick = new EventHandler<Timer>();
+    enabled = false;
 
     constructor(interval: number) {
         this.interval = interval;
@@ -15,6 +16,8 @@ export default class Timer {
     }
 
     update(gameTime: GameTime) {
+        if (!this.enabled)
+            return;
         let now = gameTime.totalTime;
         if (this.#lastFrame == null)
             this.#lastFrame = gameTime.totalTime;
@@ -23,5 +26,12 @@ export default class Timer {
             this.#ontick();
         }
     }
-    
+
+    start() {
+        this.enabled = true;
+    }
+
+    stop() {
+        this.enabled = false;
+    }
 }

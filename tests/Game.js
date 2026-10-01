@@ -7,6 +7,7 @@ export default class Game extends BaseGame {
     constructor() {
         super(document.querySelector("canvas").getContext("2d"));
         this.timer.tick.add(this.timerOnTick.bind(this));
+        this.timer.start();
     }
 
     timerOnTick(sender) {
