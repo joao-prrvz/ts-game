@@ -1,4 +1,4 @@
-import type IDrawable from "./graphics/IDrawable.js";
+import type IDrawable from "./IDrawable.js";
 
 export default class Vector implements IDrawable {
     #x!: number;
@@ -80,15 +80,8 @@ export default class Vector implements IDrawable {
     added(value: number): Vector;
 
     added(value: Vector|number) {
-        const vector = this.clone();
-        if (value instanceof Vector) {
-            vector.x += value.x;
-            vector.y += value.y;
-        }
-        else {
-            vector.x += value;
-            vector.y += value;
-        }
+        let vector = this.clone();
+        vector.add(value as Vector)
         return vector;
     }
 
@@ -106,6 +99,15 @@ export default class Vector implements IDrawable {
         }
     }
 
+    subtracted(value: Vector): Vector;
+    subtracted(value: number): Vector;
+
+    subtracted(value: Vector|number) {
+        let vector = this.clone();
+        vector.subtract(value as Vector);
+        return vector;
+    }
+
     multiply(value: Vector): void;
     multiply(value: number): void;
 
@@ -118,5 +120,37 @@ export default class Vector implements IDrawable {
             this.x *= value;
             this.y *= value;
         }
+    }
+
+    multiplied(value: Vector): Vector;
+    multiplied(value: number): Vector;
+
+    multiplied(value: Vector|number) {
+        let vector = this.clone();
+        vector.multiply(value as Vector);
+        return vector;   
+    }
+
+    divide(value: Vector): void;
+    divide(value: number): void;
+
+    divide(value: Vector|number) {
+        if (value instanceof Vector) {
+            this.x /= value.x;
+            this.y /= value.y;
+        }
+        else {
+            this.x /= value;
+            this.y /= value;
+        }
+    }
+
+    divided(value: Vector): Vector;
+    divided(value: number): Vector;
+
+    divided(value: Vector|number) {
+        let vector = this.clone();
+        vector.divide(value as Vector);
+        return vector;   
     }
 }
