@@ -1,6 +1,6 @@
-import type GameTime from "../GameTime.js";
-import Timer from "../Timer.js";
-import Vector from "../Vector.js";
+import type GameTime from "../core/GameTime.js";
+import Timer from "../core/Timer.js";
+import Vector from "../core/Vector.js";
 import Sprite from "./Sprite.js";
 import SpriteAnimation from "./SpriteAnimation.js";
 import type Texture from "./Texture.js";
@@ -55,17 +55,29 @@ export default class AnimatedSprite extends Sprite {
         this.#timer.update(gameTime);
     }
 
-    draw(ctx: CanvasRenderingContext2D, origin?: Vector): void {
-        if (this.texture.data === null || this.currentAnimation === null)
+    draw(ctx: CanvasRenderingContext2D, origin: Vector = Vector.zero): void {
+        if (!this.texture.isLoaded() || this.currentAnimation === null)
             return;
         let globalFrame = this.currentAnimation.globalFrame;
         let position = new Vector(
             globalFrame % this.columns, Math.floor(globalFrame / this.columns)
         );
         position.multiply(new Vector(this.width, this.height));
-        ctx.drawImage(this.texture.data, position.x, position.y, 
-            this.width, this.height,
-            0, 0, this.width, this.height
-        )
+
+        ctx.save();
+        let drawPosition = this.position.added(origin);
+        ctx.translate(drawPosition.x, drawPosition.y);
+        ctx.rotate(this.angle * Math.PI / 180);
+        let scaledSize = this.size.multiplied(this.scale);
+        ctx.drawImage(
+            this.texture.data,
+            position.x, position.y,
+            this.width, this.height, 
+            -scaledSize.x / 2,
+            -scaledSize.y / 2,
+            scaledSize.x,
+            scaledSize.y,
+        );
+        ctx.restore();
     }
 }

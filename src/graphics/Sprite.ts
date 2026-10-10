@@ -1,13 +1,16 @@
-import Vector from "../Vector.js";
-import type IDrawable from "./IDrawable.js";
+import Vector from "../core/Vector.js";
+import type IDrawable from "../core/IDrawable.js";
 import Texture from "./Texture.js";
 
 export default class Sprite implements IDrawable {
     position = new Vector(0);
     texture: Texture;
+    angle = 0;
+    scale = new Vector(1);
 
-    get width() { return this.texture.data!.width; }
-    get height() { return this.texture.data!.height; }
+    get width() { return this.texture.data?.width ?? 0; }
+    get height() { return this.texture.data?.height ?? 0; }
+    get size() { return new Vector(this.width, this.height); }
 
     constructor(texture: Texture);
     constructor(url: string);
@@ -17,8 +20,20 @@ export default class Sprite implements IDrawable {
     }
 
     draw(ctx: CanvasRenderingContext2D, origin: Vector = Vector.zero): void {
-        this.texture.draw(ctx, this.position.added(origin));                                                                                                                                                  
+        if (!this.texture.isLoaded())
+            return;
+        ctx.save();
+
+        ctx.translate(this.position.x, this.position.y);
+        ctx.rotate(this.angle * Math.PI / 180);
+        let scaledSize = this.size.multiplied(this.scale);
+        ctx.drawImage(
+            this.texture.data,
+            -scaledSize.x / 2,
+            -scaledSize.y / 2,
+            scaledSize.x,
+            scaledSize.y
+        );
+        ctx.restore();
     }
-
-
 }
