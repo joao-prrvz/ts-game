@@ -1,33 +1,34 @@
-import { AnimatedSprite, BaseGame, Sprite, Timer, Vector } from "../dist/index.js";
-let sprite = new AnimatedSprite("./assets/ghost.png", 7, 2);
-sprite.add("idle", 0, 6, 8, true);
-sprite.play("idle");
+import { AnimatedSprite, BaseGame, Circle, GameTime, Rectangle, Shape, Sprite, Timer, Vector } from "../dist/index.js";
+
+let ghost = new AnimatedSprite("./assets/ghost.png", 7, 2);
+ghost.add("idle", 0, 6, 8);
+ghost.play("idle");
+let face = new Sprite("./assets/face.png");
+let center = Vector.zero;
+
 export default class Game extends BaseGame {
-    timer = new Timer(1000);
     constructor() {
         super(document.querySelector("canvas").getContext("2d"));
-        this.timer.tick.add(this.timerOnTick.bind(this));
-        this.timer.start();
+        center = new Vector(this.ctx.canvas.width / 2);
+        ghost.position = face.position.clone(); 
+        this.ctx.imageSmoothingEnabled = false;
     }
-
-    timerOnTick(sender) {
-        console.log("Hello");
-    }
-
+    
     /**
      * @param {GameTime} gameTime 
-     */
+    */
     update(gameTime){
-        this.timer.update(gameTime);
-        sprite.update(gameTime);
+        ghost.update(gameTime);
     }
 
 
     draw() {
         super.draw();
-        this.ctx.beginPath();
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-        this.ctx.closePath();
-        sprite.draw(this.ctx);
+        Shape.drawRectPro(this.ctx, center, new Vector(30), "fill");
+        ghost.draw(this.ctx, center);
+        new Rectangle(ghost.height).draw(this.ctx, "stroke", "red", center);
+        new Circle(ghost.height).draw(this.ctx, "stroke", "yellow", center);
     }
 }
+
+new Game().start();
