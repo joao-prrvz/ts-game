@@ -153,4 +153,17 @@ export default class Vector implements IDrawable {
         vector.divide(value as Vector);
         return vector;   
     }
+
+    normalize() {
+        if (this.length != 0) {
+            this.x /= this.length;
+            this.y /= this.length;
+        }
+    }
+
+    normalized() {
+        let vector = this.clone();
+        vector.normalize();
+        return vector;
+    }
 }
