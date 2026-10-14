@@ -3,7 +3,7 @@ import Timer from "../core/Timer.js";
 import Vector from "../core/Vector.js";
 import Sprite from "./Sprite.js";
 import SpriteAnimation from "./SpriteAnimation.js";
-import type Texture from "./Texture.js";
+import type Texture from "../resources/Texture.js";
 
 export default class AnimatedSprite extends Sprite {
     

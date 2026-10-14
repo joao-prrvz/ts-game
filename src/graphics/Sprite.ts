@@ -1,6 +1,6 @@
 import Vector from "../core/Vector.js";
 import type IDrawable from "../core/IDrawable.js";
-import Texture from "./Texture.js";
+import Texture from "../resources/Texture.js";
 
 export default class Sprite implements IDrawable {
     position = new Vector(0);
