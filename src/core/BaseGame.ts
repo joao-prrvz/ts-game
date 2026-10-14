@@ -1,20 +1,69 @@
+import InputManager from "../input/InputManager.js";
 import GameTime from "./GameTime.js";
+import Vector from "./Vector.js";
 
 export default abstract class BaseGame {
+    targetFps: number = 0;
     protected ctx: CanvasRenderingContext2D;
+
+    get currentFps() { return this.#currentFps; }
+
+    get size(): Readonly<Vector> { return new Vector(this.width, this.height); }
+
+    get width() { return this.ctx.canvas.width; }
+    set width(value) { this.ctx.canvas.width = value; }
+
+    get height() { return this.ctx.canvas.height; }
+    set height(value) { this.ctx.canvas.height = value; }
+
+    #currentFps = 0;
 
     constructor(ctx: CanvasRenderingContext2D) {
         this.ctx = ctx;
+        InputManager.initialize(ctx.canvas);
     }
 
-    start(totalTime: number = 0) {
-        this.update(new GameTime(totalTime));
-        this.draw();
-        requestAnimationFrame(this.start.bind(this));
+    async start() {
+        let now = performance.now();
+        while (true) {
+            let prev = now;
+            let delay = this.#getFrameDelay(prev);
+            let interval = this.targetFps != 0 ? 1000 / this.targetFps : 0;
+            this.update(new GameTime(delay));
+            this.draw(this.ctx);
+
+            delay = this.#getFrameDelay(prev);
+            if (delay < interval)
+                await this.#sleep(interval - delay);
+            else if (interval == 0)
+                await this.#sleep(0);
+
+            delay = this.#getFrameDelay(prev);
+            this.#currentFps = 1000 / delay;
+            now = performance.now();
+        }
+    }
+    
+    scaleUp() {
+        let aspect = this.width / this.height;
+        let canvas = this.ctx.canvas;
+        canvas.style.aspectRatio = aspect.toString();
+        canvas.style.width = `min(100vw, 100dvh * ${aspect})`; 
     }
 
-    abstract update(gameTime: GameTime): void;
-    draw() {
-        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    async #sleep(ms: number) {
+        return new Promise<void>(resolve => setTimeout(resolve, ms));
+    }
+
+    update(gameTime: GameTime) {
+        InputManager.update();
+    }
+
+    draw(ctx: CanvasRenderingContext2D) {
+        ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    }
+
+    #getFrameDelay(previousFrameTime: number) {
+        return performance.now() - previousFrameTime;
     }
 }
