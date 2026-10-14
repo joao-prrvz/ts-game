@@ -26,19 +26,12 @@ export default class Rectangle extends Shape  {
 
 
     draw(ctx: CanvasRenderingContext2D, origin?: Vector): void;
-    draw(ctx: CanvasRenderingContext2D, style: ShapeStyle, origin?: Vector): void;
-    draw(ctx: CanvasRenderingContext2D, style: ShapeStyle, color:string, origin?: Vector): void;
 
-    draw(ctx: CanvasRenderingContext2D, p1: Vector|ShapeStyle = Vector.zero, p2?: Vector|string, p3?: Vector): void {
-        let origin = p1 instanceof Vector 
-            ? p1 : p2 instanceof Vector 
-            ? p2 : p3 ?? Vector.zero;
+    draw(ctx: CanvasRenderingContext2D, origin: Vector = Vector.zero): void {
         let drawPositon = this.position
             .added(origin);
         
-        let style = typeof(p1) == "string" ? p1 : "stroke";
-        let color = typeof(p2) == "string" ? p2 : "black"; 
-        Shape.drawRectPro(ctx, drawPositon, this.size, style, color);
+        Shape.drawRectPro(ctx, drawPositon, this.size, this.style, this.color);
     }
     
 }

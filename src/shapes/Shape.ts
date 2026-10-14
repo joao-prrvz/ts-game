@@ -5,16 +5,16 @@ export type ShapeStyle = "stroke"|"fill";
 
 export default abstract class Shape implements IDrawable {
     position = Vector.zero;
+    color = "black";
+    style: ShapeStyle = "stroke";
     
     abstract draw(ctx: CanvasRenderingContext2D, origin?: Vector): void;
-    abstract draw(ctx: CanvasRenderingContext2D, style?: ShapeStyle, origin?: Vector): void;
 
     static drawCircle(ctx: CanvasRenderingContext2D, position: Vector, radius: number, style: ShapeStyle = "stroke", color: string = "black") {
         ctx.beginPath();
         ctx.arc(position.x, position.y, radius, 0, 360 * (Math.PI / 180));
         this.#drawStyle(ctx, style, color);
     }
-
 
     static drawRect(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, style: ShapeStyle = "stroke", color: string = "black") {
         ctx.beginPath();
@@ -28,6 +28,7 @@ export default abstract class Shape implements IDrawable {
     static drawRectPro(ctx: CanvasRenderingContext2D, position: Vector, size: Vector, style: ShapeStyle = "stroke", color: string = "black") {
         this.drawRect(ctx, position.x, position.y, size.x, size.y, style, color);
     }
+
 
     static #drawStyle(ctx: CanvasRenderingContext2D, style: ShapeStyle, color: string = "black") {
         switch(style) {
