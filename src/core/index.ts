@@ -4,3 +4,4 @@ export { Timer } from "./Timer.js";
 export type { IDrawable } from "./IDrawable.js";
 export { Transform } from "./Transform.js";
 export { Vector } from "./Vector.js";
+export { EventHandler } from "./EventHandler.js";

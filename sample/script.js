@@ -31,8 +31,8 @@ class Game extends BaseGame {
      */
     update(gameTime) {
         super.update();
-        this.player.position = InputManager.mousePosition;
-        this.player.shape.style = InputManager.mouseDown ? "fill" : "stroke";
+        this.player.position = InputManager.mouse.position;
+        this.player.shape.style = InputManager.mouse.down ? "fill" : "stroke";
         this.player.shape.angle ++;
         this.world.update(gameTime);
     }
