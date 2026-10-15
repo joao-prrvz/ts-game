@@ -1,4 +1,5 @@
 import type IDrawable from "./IDrawable.js";
+import type Transform from "./Transform.js";
 
 export default class Vector implements IDrawable {
     #x!: number;
@@ -16,18 +17,9 @@ export default class Vector implements IDrawable {
     get length() { return Math.sqrt(this.x ** 2 + this.y ** 2); }
     
     get angle() {
-        let arctan = Math.tanh(this.y / this.x);
-        if (this.x > 0 && this.y > 0)
-            return arctan;
-        if (this.x < 0 && (this.y > 0 || this.y < 0))
-            return arctan + 180;
-        if (this.x > 0 && this.y < 0)
-            return arctan + 360;
-        if (this.y > 0 && this.x == 0)
-            return 90;
-        if (this.y < 0 && this.x == 0)
-            return 270;
-        return 0;
+        let radians = Math.atan2(this.y, this.x);
+        let degrees = radians * (180 / Math.PI);
+        return degrees < 0 ? degrees + 360 : degrees;
     }
 
     constructor(value: number);
@@ -61,6 +53,10 @@ export default class Vector implements IDrawable {
     toString() {
         return `Vector(${this.x}, ${this.y})`;
     } 
+
+    equals(vector: Vector) {
+        return this.x == vector.x && this.y == vector.y;
+    }
 
     add(value: Vector): void;
     add(value: number): void;
@@ -166,4 +162,26 @@ export default class Vector implements IDrawable {
         vector.normalize();
         return vector;
     }
+
+    transformed(tranform: Transform) {
+        let rotationX = tranform.cos * this.x - tranform.sin * this.y;
+        let rotationY = tranform.sin * this.x + tranform.cos * this.y;
+        let translationX = rotationX + tranform.position.x;
+        let translationY = rotationY + tranform.position.y;
+        return new Vector(translationX, translationY);
+    }
+    
+    distance(vector: Vector) {
+        return this.subtracted(vector).length;
+    }
+
+    dot(vector: Vector) {
+        return this.x * vector.x + this.y * vector.y;
+    }
+
+    cross(vector: Vector) {
+        return this.x * vector.y - this.y * vector.x;
+    }
+
+    
 }

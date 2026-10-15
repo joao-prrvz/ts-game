@@ -1,6 +1,7 @@
 import type GameTime from "../core/GameTime.js";
 import type Vector from "../core/Vector.js";
 import Circle from "../shapes/Circle.js";
+import Polygon from "../shapes/Polygon.js";
 import Rectangle from "../shapes/Rectangle.js";
 import Collider from "./Collider.js";
 import Collisions from "./Collisions.js";
@@ -49,14 +50,21 @@ export default class World {
             const col1 = colliders[i]!;
             for (let j = i + 1; j < colliders.length; j++) {
                 const col2 = colliders[j]!;
-
+                let vector: Vector|null = null;
                 if (col1.shape instanceof Circle) {
-                    if (col2.shape instanceof Circle) {
-                        let vector = Collisions.intersectCircles(col1.shape, col2.shape) 
-                        if (vector != null)
-                            this.#resolve(col1, col2, vector);
-                    }
+                    if (col2.shape instanceof Circle)
+                        vector = Collisions.intersectCircles(col1.shape, col2.shape); 
+                    else if (col2.shape instanceof Rectangle)
+                        vector = Collisions.intersectCirclePolygon(col1.shape, col2.shape);
                 }
+                else if (col1.shape instanceof Polygon) {
+                    if (col2.shape instanceof Polygon)
+                        vector = Collisions.intersectPolygons(col1.shape, col2.shape);
+                    else if (col2.shape instanceof Circle)
+                        vector = Collisions.intersectCirclePolygon(col2.shape, col1.shape);
+                }
+                if (vector != null)
+                    this.#resolve(col1, col2, vector);
             }
             
         }

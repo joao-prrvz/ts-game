@@ -1,5 +1,6 @@
-import type Vector from "../core/Vector";
-import type Circle from "../shapes/Circle";
+import Vector from "../core/Vector.js";
+import type Circle from "../shapes/Circle.js";
+import type Polygon from "../shapes/Polygon.js";
 
 export default class Collisions {
 
@@ -14,5 +15,164 @@ export default class Collisions {
             .normalized()
             .multiplied(depth);
         return normal;
+    }
+
+    static intersectPolygons(p1: Polygon, p2: Polygon): Vector|null {
+        let verticesA = p1.transformedVertices;
+        let verticesB = p2.transformedVertices;
+        let pathA = this.#checkVertices(verticesA, verticesB);
+        if (pathA == null)
+            return null;
+        let pathB = this.#checkVertices(verticesB, verticesA);
+        if (pathB == null)
+            return null;
+        
+        let path = pathA.length < pathB.length ? pathA : pathB; 
+
+        let direction = p1.position.subtracted(p2.position);
+        if (direction.dot(path) < 0)
+            path.multiply(-1);
+
+        return path;
+    }
+
+    static intersectCirclePolygon(circle: Circle, polygon: Polygon): Vector | null {
+        let vertices = polygon.transformedVertices;
+        let depth = Number.MAX_VALUE;
+        let normal = Vector.zero;
+
+        // Check polygon edge normals
+        for (let i = 0; i < vertices.length; i++) {
+            let va = vertices[i]!;
+            let vb = vertices[(i + 1) % vertices.length]!;
+
+            let edge = vb.subtracted(va);
+            let axis = new Vector(-edge.y, edge.x).normalized();
+
+            let { min: minA, max: maxA } = this.#projectVertices(vertices, axis);
+            let { min: minB, max: maxB } = this.#projectCircle(circle, axis);
+
+            // A separating axis means there is no collision
+            if (minA >= maxB || minB >= maxA)
+                return null;
+
+            let axisDepth = Math.min(maxB - minA, maxA - minB);
+
+            if (axisDepth < depth) {
+                depth = axisDepth;
+                normal = axis;
+            }
+        }
+
+        // Check the axis between the circle and its closest polygon vertex
+        let cpIndex = this.#findClosestPointOnPolygone(circle.position, vertices);
+        let cp = vertices[cpIndex]!;
+
+        let axis = cp.subtracted(circle.position).normalized();
+
+        if (axis.length > 0) {
+            let { min: minA, max: maxA } = this.#projectVertices(vertices, axis);
+            let { min: minB, max: maxB } = this.#projectCircle(circle, axis);
+
+            if (minA >= maxB || minB >= maxA)
+                return null;
+
+            let axisDepth = Math.min(maxB - minA, maxA - minB);
+
+            if (axisDepth < depth) {
+                depth = axisDepth;
+                normal = axis;
+            }
+        }
+
+        // Calculate the minimum translation vector
+        let path = normal.multiplied(depth);
+
+        // Orient the vector from the circle toward the polygon
+        let direction = polygon.position.subtracted(circle.position);
+
+        if (direction.dot(path) < 0)
+            path.multiply(-1);
+
+        return path;
+    }
+
+
+    static #checkVertices(verticesA: Vector[], verticesB: Vector[]) {
+        let depth = Number.MAX_VALUE; 
+        let normal = Vector.zero;
+        for (let i = 0; i < verticesA.length; i++) {
+            let va = verticesA[i]!;
+            let vb = verticesA[(i + 1) % verticesA.length]!;
+
+            let edge = vb?.subtracted(va);
+            let axis = new Vector(-edge.y, edge.x);
+
+            let {min: minA, max: maxA} = this.#projectVertices(verticesA, axis);
+            let {min: minB, max: maxB} = this.#projectVertices(verticesB, axis);
+
+            if (minA >= maxB || minB >= maxA)
+                return null;
+
+            let axisDepth = Math.min(maxB - minA, maxA - minB)
+
+            if (axisDepth < depth) {
+                depth = axisDepth;
+                normal = axis;
+            }
+        }
+        depth /= normal.length;
+        return normal.normalized().multiplied(depth); 
+    }
+
+    static #projectCircle(circle: Circle, axis: Vector) {
+        let direction = axis.normalized();
+        let centerProjection = circle.position.dot(axis);
+        let radiusProjection = circle.radius * direction.length;
+
+        return {
+            min: centerProjection - radiusProjection,
+            max: centerProjection + radiusProjection
+        };
+    }
+
+    static #findClosestPointOnPolygone(circlePosition: Vector, vertices: Vector[]) {
+        let result = 1;
+        let minDistance = Number.MAX_VALUE;
+        for (let i = 0; i < vertices.length; i++) {
+            const vertice = vertices[i]!;
+            let distance = vertice.distance(circlePosition);
+
+            if (distance < minDistance) {
+                minDistance = distance
+                result = i;
+            }
+        }
+        return result;
+    }
+
+    static #projectVertices(vertices: Vector[], axis: Vector) {
+        let min = Number.MAX_VALUE;
+        let max = Number.MIN_VALUE;
+
+        for (const vertice of vertices) {
+            let proj = axis.dot(vertice);
+            if (proj < min)
+                min = proj;
+            if (proj > max)
+                max = proj;
+        }
+
+        return { min, max };
+    }
+
+    static #fincArithmeticMean(vertices: Vector[]) {
+        let sumX = 0;
+        let sumY = 0;
+        for (const vertice of vertices) {
+            sumX += vertice.x;
+            sumY += vertice.y;
+        }
+        return new Vector(sumX, sumY).divided(vertices.length);
     }
 }

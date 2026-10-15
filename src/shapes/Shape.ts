@@ -4,9 +4,11 @@ import Vector from "../core/Vector.js";
 export type ShapeStyle = "stroke"|"fill";
 
 export default abstract class Shape implements IDrawable {
-    position = Vector.zero;
     color = "black";
     style: ShapeStyle = "stroke";
+
+    angle = 0;
+    position = Vector.zero;
     
     abstract draw(ctx: CanvasRenderingContext2D, origin?: Vector): void;
 
@@ -29,8 +31,31 @@ export default abstract class Shape implements IDrawable {
         this.drawRect(ctx, position.x, position.y, size.x, size.y, style, color);
     }
 
+    static drawPolygon(ctx: CanvasRenderingContext2D, vertices: Vector[], triangles: number[], style: ShapeStyle = "stroke", color: string = "black") {
+        for (let i = 0; i < triangles.length; i += 3) {
 
-    static #drawStyle(ctx: CanvasRenderingContext2D, style: ShapeStyle, color: string = "black") {
+            // Get the three vertex indices for the current triangle
+            const index0 = triangles[i]!;
+            const index1 = triangles[i + 1]!;
+            const index2 = triangles[i + 2]!;
+
+            // Fetch the actual [x, y] coordinates from your vertices array
+            const p0 = vertices[index0]!;
+            const p1 = vertices[index1]!;
+            const p2 = vertices[index2]!;
+
+            ctx.beginPath();
+            ctx.moveTo(p0.x, p0.y);
+            ctx.lineTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.closePath();
+
+            this.#drawStyle(ctx, style, color);
+        }
+    }
+
+
+    static #drawStyle(ctx: CanvasRenderingContext2D, style: ShapeStyle, color: string) {
         switch(style) {
             case "fill": {
                 let oldStyle = ctx.fillStyle;
