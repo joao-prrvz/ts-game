@@ -1,11 +1,11 @@
-import { BaseGame, Circle, Collider, GameTime, InputManager, Shape, Sprite, Vector, World } from "../dist/index.js";
+import { BaseGame, Circle, Collider, GameTime, InputManager, Rectangle, Shape, Sprite, Vector, World } from "../dist/index.js";
 import Entity from "./Entity.js";
 import Resources from "./Resources.js";
 
 class Game extends BaseGame {
     world = new World();
     resources = new Resources();
-    col = new Collider(new Circle(10));
+    col = new Collider(new Circle(30));
     sprite = new Sprite(this.resources.face);
 
     constructor() {
@@ -28,6 +28,7 @@ class Game extends BaseGame {
         super.update();
         this.player.position = InputManager.mousePosition;
         this.player.shape.style = InputManager.mouseDown ? "fill" : "stroke";
+        this.player.shape.angle ++;
         this.world.update(gameTime);
     }
 

@@ -14,6 +14,7 @@ export default class Entity extends Collider {
     update(gameTime) {
         super.update(gameTime);
         this.sprite.position = this.position;
+        this.sprite.angle = this.angle;
     }
 
     draw(ctx) {
