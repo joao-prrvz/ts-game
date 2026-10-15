@@ -1,6 +1,6 @@
-import Vector from "../core/Vector.js";
+import { Vector } from "../core/index.js";
 
-export default class InputManager {
+export class InputManager {
     static get mousePosition() { 
         let position =  this.globalMousePosition;
         let boundRect = this.#canvas.getBoundingClientRect();
@@ -30,9 +30,6 @@ export default class InputManager {
         this.#canvas = canvas;
         window.addEventListener("keydown", this.#onkeydown.bind(this));
         window.addEventListener("keyup", this.#onkeyup.bind(this));
-        window.addEventListener("mousemove", this.#onmousemove.bind(this));
-        window.addEventListener("mousedown", this.#onmousedown.bind(this));
-        window.addEventListener("mouseup", this.#onmouseup.bind(this));
     }
 
     static update() {
@@ -54,19 +51,5 @@ export default class InputManager {
 
     static #onkeyup(e: KeyboardEvent) {
         this.#keys.delete(e.key)
-    }
-
-    static #onmousemove(e: MouseEvent) {
-        this.#mousePositon.x = e.x;
-        this.#mousePositon.y = e.y;
-    }
-
-    static #onmousedown(e: MouseEvent) {
-        this.#mouseDown = true;
-    }
-
-    static #onmouseup(e: MouseEvent) {
-        this.#mouseDown = false;
-        e.button
     }
 }

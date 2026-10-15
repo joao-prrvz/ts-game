@@ -1,6 +1,7 @@
-import { Circle, Collider, Rectangle, Sprite } from "../dist/index.js";
+import { Collider } from "../dist/physics/index.js";
+import { Rectangle } from "../dist/shapes/index.js";
 
-export default class Entity extends Collider {
+export class Entity extends Collider {
 
     /**
      * 

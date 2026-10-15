@@ -1,7 +1,6 @@
-import EventHandler from "./EventHandler.js";
-import GameTime from "./GameTime.js";
+import { EventHandler } from "./EventHandler.js";
 
-export default class Timer {
+export class Timer {
     #lastFrame: number|null = null;
     interval: number;
     tick = new EventHandler<Timer>();
@@ -15,12 +14,12 @@ export default class Timer {
         this.tick.invoke(this);
     }
 
-    update(gameTime: GameTime) {
+    update() {
         if (!this.enabled)
             return;
-        let now = gameTime.totalTime;
+        let now = performance.now();
         if (this.#lastFrame == null)
-            this.#lastFrame = gameTime.totalTime;
+            this.#lastFrame = performance.now();
         if (now - this.#lastFrame > this.interval) {
             this.#lastFrame = now;
             this.#ontick();

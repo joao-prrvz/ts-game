@@ -1,12 +1,10 @@
-import type GameTime from "../core/GameTime.js";
-import type Vector from "../core/Vector.js";
-import Circle from "../shapes/Circle.js";
-import Polygon from "../shapes/Polygon.js";
-import Rectangle from "../shapes/Rectangle.js";
-import Collider from "./Collider.js";
-import Collisions from "./Collisions.js";
+import type { Vector } from "../core/index.js";
+import { Circle, Polygon, Rectangle } from "../shapes/index.js";
+import { Collider } from "./Collider.js";
+import { Collisions } from "./Collisions.js";
 
-export default class World {
+
+export class World {
     #colliders = new Set<Collider>();
     #collidersToRemove = new Set<Collider>();
     #collidersToAdd = new Set<Collider>();
@@ -26,7 +24,7 @@ export default class World {
         }
     }
 
-    update(gameTime: GameTime) {
+    update(deltaTime: number) {
         for (const collider of this.#collidersToAdd)
             this.#colliders.add(collider);
         this.#collidersToAdd.clear();
@@ -43,7 +41,7 @@ export default class World {
             colliders.push(collider)
         
         for (const collider of colliders) {
-            collider.update(gameTime);
+            collider.update(deltaTime);
         }
 
         for (let i = 0; i < colliders.length; i++) {

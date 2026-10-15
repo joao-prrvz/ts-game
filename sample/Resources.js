@@ -1,5 +1,5 @@
-import { ResourceManager, Texture } from "../dist/index.js";
+import { ResourceManager, Texture } from "../dist/resources/index.js";
 
-export default class Resources extends ResourceManager {
+export class Resources extends ResourceManager {
     face = new Texture("./assets/face.png");
 }

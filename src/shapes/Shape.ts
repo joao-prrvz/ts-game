@@ -1,9 +1,8 @@
-import type IDrawable from "../core/IDrawable.js";
-import Vector from "../core/Vector.js";
+import { Vector, type IDrawable } from "../core/index.js";
 
 export type ShapeStyle = "stroke"|"fill";
 
-export default abstract class Shape implements IDrawable {
+export abstract class Shape implements IDrawable {
     color = "black";
     style: ShapeStyle = "stroke";
 

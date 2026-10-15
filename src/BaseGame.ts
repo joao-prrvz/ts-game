@@ -1,8 +1,7 @@
-import InputManager from "../input/InputManager.js";
-import GameTime from "./GameTime.js";
-import Vector from "./Vector.js";
+import { InputManager } from "./input/index.js";
+import { Vector } from "./core/Vector.js";
 
-export default abstract class BaseGame {
+export abstract class BaseGame {
     targetFps: number = 0;
     protected ctx: CanvasRenderingContext2D;
 
@@ -29,7 +28,7 @@ export default abstract class BaseGame {
             let prev = now;
             let delay = this.#getFrameDelay(prev);
             let interval = this.targetFps != 0 ? 1000 / this.targetFps : 0;
-            this.update(new GameTime(delay));
+            this.update(delay);
             this.draw(this.ctx);
 
             delay = this.#getFrameDelay(prev);
@@ -55,7 +54,7 @@ export default abstract class BaseGame {
         return new Promise<void>(resolve => setTimeout(resolve, ms));
     }
 
-    update(gameTime: GameTime) {
+    update(deltaTime: number) {
         InputManager.update();
     }
 

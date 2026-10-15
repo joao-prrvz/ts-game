@@ -1,6 +1,11 @@
-import { BaseGame, Circle, Collider, GameTime, InputManager, Rectangle, Shape, Sprite, Vector, World } from "../dist/index.js";
-import Entity from "./Entity.js";
-import Resources from "./Resources.js";
+import { BaseGame } from "../dist/BaseGame.js";
+import { Vector } from "../dist/core/index.js";
+import { World, Collider } from "../dist/physics/index.js";
+import { Resources } from "./Resources.js";
+import { Sprite } from "../dist/graphics/index.js";
+import { Circle } from "../dist/shapes/index.js";
+import { Entity } from "./Entity.js";
+import { InputManager } from "../dist/input/index.js";
 
 class Game extends BaseGame {
     world = new World();

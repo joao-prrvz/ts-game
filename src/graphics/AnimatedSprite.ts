@@ -1,11 +1,10 @@
-import type GameTime from "../core/GameTime.js";
-import Timer from "../core/Timer.js";
-import Vector from "../core/Vector.js";
-import Sprite from "./Sprite.js";
-import SpriteAnimation from "./SpriteAnimation.js";
-import type Texture from "../resources/Texture.js";
+import { Timer, Vector } from "../core/index.js";
+import type { Texture } from "../resources/index.js";
+import { Sprite } from "./Sprite.js";
+import { SpriteAnimation } from "./SpriteAnimation.js";
 
-export default class AnimatedSprite extends Sprite {
+
+export class AnimatedSprite extends Sprite {
     
     readonly columns;
     readonly rows;
@@ -49,10 +48,10 @@ export default class AnimatedSprite extends Sprite {
         this.#timer.stop();
     }
 
-    update(gameTime: GameTime) {
+    update(deltaTime: number) {
         if (this.currentAnimation === null)
             return;
-        this.#timer.update(gameTime);
+        this.#timer.update();
     }
 
     draw(ctx: CanvasRenderingContext2D, origin: Vector = Vector.zero): void {

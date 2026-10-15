@@ -1,6 +1,6 @@
-import Resource from "./Resource.js";
+import { Resource } from "./Resource.js";
 
-export default class ResourceManager {
+export class ResourceManager {
     async load() {
         let promises: Promise<void>[] = [];
         for (const [key, value] of Object.entries(this)) {

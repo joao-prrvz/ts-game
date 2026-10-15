@@ -1,8 +1,7 @@
-import Vector from "../core/Vector.js";
-import Polygon from "./Polygon.js";
-import Shape, { type ShapeStyle } from "./Shape.js";
+import { Vector } from "../core/index.js";
+import { Polygon } from "./Polygon.js";
 
-export default class Rectangle extends Polygon  {
+export class Rectangle extends Polygon  {
     
     size: Vector;
     get width() { return this.size.x; }

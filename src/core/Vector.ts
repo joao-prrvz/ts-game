@@ -1,7 +1,7 @@
-import type IDrawable from "./IDrawable.js";
-import type Transform from "./Transform.js";
+import type { IDrawable } from "./IDrawable.js";
+import type { Transform } from "./Transform.js";
 
-export default class Vector implements IDrawable {
+export class Vector implements IDrawable {
     #x!: number;
     #y!: number;
 

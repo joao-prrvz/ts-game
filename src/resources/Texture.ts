@@ -1,8 +1,8 @@
-import Vector from "../core/Vector.js";
-import type IDrawable from "../core/IDrawable.js";
-import Resource from "./Resource.js";
+import { Vector, type IDrawable } from "../core/index.js";
+import { Resource } from "./Resource.js";
 
-export default class Texture extends Resource implements IDrawable {
+
+export class Texture extends Resource implements IDrawable {
     data: ImageBitmap|null = null;
     #url: string;
 

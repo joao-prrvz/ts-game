@@ -1,6 +1,6 @@
 type EventListener<T> = (sender: T) => void;
 
-export default class EventHandler<T> {
+export class EventHandler<T> {
     #listeners: EventListener<T>[] = [];
 
     invoke(sender: T) {

@@ -1,5 +1,5 @@
 
-export default class SpriteAnimation {
+export class SpriteAnimation {
     readonly name: string;
     readonly start: number;
     readonly frameCount: number;

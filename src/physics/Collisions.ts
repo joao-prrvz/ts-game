@@ -1,8 +1,7 @@
-import Vector from "../core/Vector.js";
-import type Circle from "../shapes/Circle.js";
-import type Polygon from "../shapes/Polygon.js";
+import { Vector } from "../core/index.js";
+import type { Circle, Polygon } from "../shapes/index.js";
 
-export default class Collisions {
+export class Collisions {
 
     static intersectCircles(c1: Circle, c2: Circle): Vector|null {
         let distance = c1.position.subtracted(c2.position).length;

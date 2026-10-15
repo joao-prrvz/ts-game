@@ -1,8 +1,7 @@
-import Transform from "../core/Transform.js";
-import Vector from "../core/Vector.js";
-import Shape from "./Shape.js";
+import { Transform, Vector } from "../core/index.js";
+import { Shape } from "./Shape.js";
 
-export default class Polygon extends Shape {
+export class Polygon extends Shape {
 
     protected triangles: number[];
     protected vertices: Vector[];

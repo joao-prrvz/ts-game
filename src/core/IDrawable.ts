@@ -1,5 +1,5 @@
-import Vector from "./Vector.js";
+import type { Vector } from "./Vector.js";
 
-export default interface IDrawable {
+export interface IDrawable {
     draw(ctx: CanvasRenderingContext2D, origin?: Vector): void;
 }

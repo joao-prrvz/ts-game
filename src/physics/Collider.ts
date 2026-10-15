@@ -1,12 +1,10 @@
-import type GameTime from "../core/GameTime.js";
-import Vector from "../core/Vector.js";
-import { Circle } from "../index.js";
-import type Shape from "../shapes/Shape.js";
-import { CollisionType } from "./CollisionType.js";
+import { Vector }from "../core/index.js";
+import type { Shape } from "../shapes/Shape.js";
+import { CollisionTypes, type CollisionType }  from "./CollisionType.js";
 
-export default class Collider {
+export class Collider {
     shape: Shape;
-    collisionType: CollisionType = CollisionType.static;
+    collisionType: CollisionType = CollisionTypes.static;
     velocity = Vector.zero;
 
     get position() { return this.shape.position; }
@@ -20,8 +18,8 @@ export default class Collider {
         this.shape.color = "red";
     }
 
-    update(gameTime: GameTime) {
-        this.position.add(this.velocity.multiplied(gameTime.deltaTime));
+    update(deltaTime: number) {
+        this.position.add(this.velocity.multiplied(deltaTime));
     }
 
     draw(ctx: CanvasRenderingContext2D) {

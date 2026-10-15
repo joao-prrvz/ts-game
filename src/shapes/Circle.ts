@@ -1,7 +1,7 @@
-import Vector from "../core/Vector.js";
-import Shape, { type ShapeStyle } from "./Shape.js";
+import { Vector } from "../core/index.js";
+import { Shape } from "./Shape.js";
 
-export default class Circle extends Shape {
+export class Circle extends Shape {
     
     radius: number;
 

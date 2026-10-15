@@ -1,3 +1,3 @@
-export default abstract class Resource  {
+export abstract class Resource  {
     abstract load(): Promise<void>;
 }

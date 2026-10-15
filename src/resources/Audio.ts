@@ -1,8 +1,7 @@
-import Vector from "../core/Vector.js";
-import EventHandler from "../core/EventHandler.js";
-import Resource from "./Resource.js";
+import { Resource } from "./Resource.js";
 
-export default class Audio extends Resource {
+
+export class Audio extends Resource {
     data: AudioBuffer|null = null;
     #loading = false;
     #url: string; 
