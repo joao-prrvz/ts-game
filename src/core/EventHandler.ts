@@ -1,18 +1,18 @@
-type EventListener<T> = (sender: T) => void;
+type EventListener<T, U> = (sender: T, args: U) => void;
 
-export class EventHandler<T> {
-    #listeners: EventListener<T>[] = [];
+export class EventHandler<T, U = void> {
+    #listeners: EventListener<T, U>[] = [];
 
-    invoke(sender: T) {
+    invoke(sender: T, args: U) {
         for (const listener of this.#listeners)
-            listener(sender);
+            listener(sender, args);
     }
 
-    add(...items: EventListener<T>[]) {
+    add(...items: EventListener<T, U>[]) {
         this.#listeners.push(...items);
     }
 
-    remove(...items: EventListener<T>[]) {
+    remove(...items: EventListener<T, U>[]) {
         this.#listeners = this.#listeners.filter(l => !items.includes(l));
     }
 }
