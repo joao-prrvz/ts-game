@@ -2,6 +2,7 @@ import type { Vector } from "../core/index.js";
 import { Circle, Polygon, Rectangle } from "../shapes/index.js";
 import { Collider } from "./Collider.js";
 import { Collisions } from "./Collisions.js";
+import { CollisionTypes } from "./CollisionType.js";
 
 
 export class World {
@@ -74,8 +75,20 @@ export class World {
     }
     
     #resolve(col1: Collider, col2: Collider, vector: Vector) {
-        col1.position.add(vector.divided(2));
-        col2.position.subtract(vector.divided(2));
+        let i = 0;
+        if (col1.collisionType == CollisionTypes.static && col2.collisionType == CollisionTypes.dynamic) {
+            col2.position.subtract(vector);
+        }
+        else if (col1.collisionType == CollisionTypes.dynamic && col2.collisionType == CollisionTypes.static) {
+            col1.position.add(vector);
+        }
+        else if (
+            (col1.collisionType == CollisionTypes.dynamic && col2.collisionType == CollisionTypes.dynamic)
+            || (col1.collisionType == CollisionTypes.static && col2.collisionType == CollisionTypes.static)
+        ) {
+            col1.position.add(vector.divided(2));
+            col2.position.subtract(vector.divided(2));
+        }
     }
     
 }
