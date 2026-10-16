@@ -2,26 +2,24 @@ import { BaseGame } from "../dist/BaseGame.js";
 import { Vector } from "../dist/core/index.js";
 import { World, Collider } from "../dist/physics/index.js";
 import { Resources } from "./Resources.js";
-import { Sprite } from "../dist/graphics/index.js";
+import { AnimatedSprite, Sprite } from "../dist/graphics/index.js";
 import { Circle } from "../dist/shapes/index.js";
-import { Entity } from "./Entity.js";
+import { Entity } from "./entities/Entity.js";
 import { InputManager } from "../dist/input/index.js";
+import { Ghost } from "./entities/Ghost.js";
 
-class Game extends BaseGame {
+
+export class Game extends BaseGame {
     world = new World();
     resources = new Resources();
-    col = new Collider(new Circle(30));
-    sprite = new Sprite(this.resources.face);
 
     constructor() {
-        Vector.precision = 0;
         super(document.querySelector("canvas").getContext("2d"));
         this.ctx.imageSmoothingEnabled = false;
         this.ctx.lineWidth = 1;
-        this.col.shape.color = "green";
-        this.player = new Entity(this.sprite);
-        this.world.add(this.player, this.col);
-        this.col.position = this.size.divided(2);
+        this.player = new Ghost(this);
+        this.player.position = this.size.divided(2);
+        this.world.add(this.player);
         this.scaleUp();
         
     }
@@ -31,9 +29,7 @@ class Game extends BaseGame {
      */
     update(gameTime) {
         super.update();
-        this.player.position = InputManager.mouse.position;
         this.player.shape.style = InputManager.mouse.down ? "fill" : "stroke";
-        this.player.shape.angle ++;
         this.world.update(gameTime);
     }
 
@@ -47,4 +43,5 @@ class Game extends BaseGame {
 
 }
 
-new Game().start();
+const game = new Game();
+game.start();
