@@ -4,7 +4,7 @@ import { CollisionTypes, type CollisionType }  from "./CollisionType.js";
 
 export class Collider {
     shape: Shape;
-    collisionType: CollisionType = CollisionTypes.static;
+    collisionType: CollisionType = CollisionTypes.dynamic;
     velocity = Vector.zero;
 
     get position() { return this.shape.position; }
@@ -19,7 +19,8 @@ export class Collider {
     }
 
     update(deltaTime: number) {
-        this.position.add(this.velocity.multiplied(deltaTime));
+        if (this.collisionType != CollisionTypes.static)
+            this.position.add(this.velocity.multiplied(deltaTime));
     }
 
     draw(ctx: CanvasRenderingContext2D) {
