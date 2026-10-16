@@ -1,5 +1,6 @@
 import { Vector } from "../core/index.js";
 import { Polygon } from "./Polygon.js";
+import { Shape } from "./Shape.js";
 
 export class Rectangle extends Polygon  {
     
@@ -53,8 +54,7 @@ export class Rectangle extends Polygon  {
     draw(ctx: CanvasRenderingContext2D, origin: Vector = Vector.zero): void {
         let drawPositon = this.position
             .added(origin);
-        super.draw(ctx);
-        //Shape.drawRectPro(ctx, drawPositon, this.size, this.style, this.color);
+        Shape.drawRectPro(ctx, drawPositon, this.size, this.angle, this.style, this.color);
     }
     
 }
