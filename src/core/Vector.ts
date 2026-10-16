@@ -5,7 +5,7 @@ export class Vector implements IDrawable {
     #x!: number;
     #y!: number;
 
-    static precision = 15;
+    static precision = 10;
     static get zero() { return new Vector(0); }
 
     get x() { return this.#x; }
@@ -151,9 +151,10 @@ export class Vector implements IDrawable {
     }
 
     normalize() {
-        if (this.length != 0) {
-            this.x /= this.length;
-            this.y /= this.length;
+        const len = this.length;
+        if (len !== 0) {
+            this.x /= len;
+            this.y /= len;
         }
     }
 

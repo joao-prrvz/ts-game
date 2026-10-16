@@ -13,8 +13,7 @@ export class Mouse {
         let boundRectSize = new Vector(boundRect.width, boundRect.height);
         let canvasSize = new Vector(this.#canvas.width, this.#canvas.height);
         position.subtract(canvasPos);
-        position.x *= canvasSize.x / boundRectSize.x;
-        position.y *= canvasSize.y / boundRectSize.y;
+        position.multiply(canvasSize.divided(boundRectSize));
         return position;
     }
     
