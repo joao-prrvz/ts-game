@@ -39,14 +39,13 @@ export class Collisions {
         let vertices = polygon.transformedVertices;
         let depth = Number.MAX_VALUE;
         let normal = Vector.zero;
-
         // Check polygon edge normals
         for (let i = 0; i < vertices.length; i++) {
             let va = vertices[i]!;
             let vb = vertices[(i + 1) % vertices.length]!;
 
             let edge = vb.subtracted(va);
-            let axis = new Vector(-edge.y, edge.x).normalized();
+            let axis = new Vector(-edge.y, edge.x);
 
             let { min: minA, max: maxA } = this.#projectVertices(vertices, axis);
             let { min: minB, max: maxB } = this.#projectCircle(circle, axis);
@@ -69,23 +68,23 @@ export class Collisions {
 
         let axis = cp.subtracted(circle.position).normalized();
 
-        if (axis.length > 0) {
-            let { min: minA, max: maxA } = this.#projectVertices(vertices, axis);
-            let { min: minB, max: maxB } = this.#projectCircle(circle, axis);
+        let { min: minA, max: maxA } = this.#projectVertices(vertices, axis);
+        let { min: minB, max: maxB } = this.#projectCircle(circle, axis);
 
-            if (minA >= maxB || minB >= maxA)
-                return null;
+        if (minA >= maxB || minB >= maxA)
+            return null;
 
-            let axisDepth = Math.min(maxB - minA, maxA - minB);
+        let axisDepth = Math.min(maxB - minA, maxA - minB);
 
-            if (axisDepth < depth) {
-                depth = axisDepth;
-                normal = axis;
-            }
+        if (axisDepth < depth) {
+            depth = axisDepth;
+            normal = axis;
         }
 
+        depth /= normal.length;
+        normal.normalize();
         // Calculate the minimum translation vector
-        let path = normal.multiplied(depth);
+        let path = new Vector(normal.x * depth, normal.y * depth);
 
         // Orient the vector from the circle toward the polygon
         let direction = polygon.position.subtracted(circle.position);
@@ -126,13 +125,18 @@ export class Collisions {
 
     static #projectCircle(circle: Circle, axis: Vector) {
         let direction = axis.normalized();
-        let centerProjection = circle.position.dot(axis);
-        let radiusProjection = circle.radius * direction.length;
+        let directionAndRadius = direction.multiplied(circle.radius);
+        let p1 = circle.position.added(directionAndRadius);
+        let p2 = circle.position.subtracted(directionAndRadius);
+        let min = p1.dot(axis);
+        let max = p2.dot(axis);
+        if (min > max) {
+            let temp = min;
+            min = max;
+            max = temp;
+        }
 
-        return {
-            min: centerProjection - radiusProjection,
-            max: centerProjection + radiusProjection
-        };
+        return { min, max };
     }
 
     static #findClosestPointOnPolygone(circlePosition: Vector, vertices: Vector[]) {
