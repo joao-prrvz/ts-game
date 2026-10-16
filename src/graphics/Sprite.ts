@@ -22,16 +22,16 @@ export class Sprite implements IDrawable {
         if (!this.texture.isLoaded())
             return;
         ctx.save();
-
-        ctx.translate(this.position.x, this.position.y);
+        let position = this.position.added(origin);
+        ctx.translate(position.x, position.y);
         ctx.rotate(this.angle * Math.PI / 180);
         let scaledSize = this.size.multiplied(this.scale);
         ctx.drawImage(
             this.texture.data,
-            -scaledSize.x / 2,
-            -scaledSize.y / 2,
-            scaledSize.x,
-            scaledSize.y
+            Math.round(-scaledSize.x / 2),
+            Math.round(-scaledSize.y / 2),
+            Math.round(scaledSize.x),
+            Math.round(scaledSize.y)
         );
         ctx.restore();
     }

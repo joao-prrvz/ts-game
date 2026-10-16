@@ -65,17 +65,17 @@ export class AnimatedSprite extends Sprite {
 
         ctx.save();
         let drawPosition = this.position.added(origin);
-        ctx.translate(drawPosition.x, drawPosition.y);
+        ctx.translate(Math.round(drawPosition.x), Math.round(drawPosition.y));
         ctx.rotate(this.angle * Math.PI / 180);
         let scaledSize = this.size.multiplied(this.scale);
         ctx.drawImage(
             this.texture.data,
-            position.x, position.y,
+            Math.round(position.x), Math.round(position.y),
             this.width, this.height, 
-            -scaledSize.x / 2,
-            -scaledSize.y / 2,
-            scaledSize.x,
-            scaledSize.y,
+            Math.round(-scaledSize.x / 2),
+            Math.round(-scaledSize.y / 2),
+            Math.round(scaledSize.x),
+            Math.round(scaledSize.y),
         );
         ctx.restore();
     }
