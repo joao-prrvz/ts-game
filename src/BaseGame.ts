@@ -4,7 +4,7 @@ import { Vector } from "./core/Vector.js";
 export abstract class BaseGame {
     targetFps: number = 0;
     protected ctx: CanvasRenderingContext2D;
-
+    static canvas: HTMLCanvasElement;
     get currentFps() { return this.#currentFps; }
 
     get size(): Readonly<Vector> { return new Vector(this.width, this.height); }
@@ -19,6 +19,7 @@ export abstract class BaseGame {
 
     constructor(ctx: CanvasRenderingContext2D) {
         this.ctx = ctx;
+        BaseGame.canvas = this.ctx.canvas;
         InputManager.initialize(ctx.canvas);
     }
 

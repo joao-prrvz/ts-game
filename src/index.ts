@@ -5,3 +5,4 @@ export * from "./physics/index.js";
 export * from "./resources/index.js";
 export * from "./shapes/index.js";
 export * from "./ui/index.js";
+export { BaseGame } from "./BaseGame.js";
