@@ -13,12 +13,20 @@ export class Keyboard {
         this.#currentKeys = [...this.#keys];
     }
 
-    isDown(key: string) {
-        return this.#currentKeys.includes(key);
+    isDown(key: string, caseSensitive = false) {
+        if (caseSensitive)
+            return this.#currentKeys.includes(key);
+
+        return this.#currentKeys.includes(key.toLowerCase()) 
+            || this.#currentKeys.includes(key.toUpperCase())
     }
 
-    isJustPressed(key: string) {
-        return this.isDown(key) && !this.#previousKeys.includes(key);
+    isJustPressed(key: string, caseSensitive = false) {
+        if (caseSensitive)
+            return this.isDown(key, caseSensitive) && !this.#previousKeys.includes(key);
+        return this.isDown(key, caseSensitive)
+            && !this.#previousKeys.includes(key.toLowerCase()) 
+            && !this.#previousKeys.includes(key.toLowerCase());
     }
     
     #onkeydown(e: KeyboardEvent) {
