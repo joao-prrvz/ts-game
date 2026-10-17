@@ -1,12 +1,19 @@
 import type { IDrawable } from "./IDrawable.js";
+import type { IVector } from "./IVector.js";
 import type { Transform } from "./Transform.js";
 
-export class Vector implements IDrawable {
+export class Vector implements IDrawable, IVector {
     #x!: number;
     #y!: number;
 
     static precision = 10;
+    
     static get zero() { return new Vector(0); }
+    static get up() { return new Vector(0, -1); }
+    static get left() { return new Vector(-1, 0); }
+    static get down() { return new Vector(0, 1); }
+    static get right() { return new Vector(1, 0); }
+    
 
     get x() { return this.#x; }
     set x(value) { this.#x = this.#round(value); }
@@ -54,99 +61,99 @@ export class Vector implements IDrawable {
         return `Vector(${this.x}, ${this.y})`;
     } 
 
-    equals(vector: Vector) {
+    equals(vector: IVector) {
         return this.x == vector.x && this.y == vector.y;
     }
 
-    add(value: Vector): void;
+    add(value: IVector): void;
     add(value: number): void;
 
-    add(value: Vector|number) {
-        if (value instanceof Vector) {
-            this.x += value.x;
-            this.y += value.y;
-        }
-        else {
+    add(value: IVector|number) {
+        if (typeof(value) == "number") {
             this.x += value;
             this.y += value;
         }
+        else {
+            this.x += value.x;
+            this.y += value.y;
+        }
     }
 
-    added(value: Vector): Vector;
+    added(value: IVector): Vector;
     added(value: number): Vector;
 
-    added(value: Vector|number) {
+    added(value: IVector|number) {
         let vector = this.clone();
-        vector.add(value as Vector)
+        vector.add(value as IVector)
         return vector;
     }
 
-    subtract(value: Vector): void;
+    subtract(value: IVector): void;
     subtract(value: number): void;
 
-    subtract(value: Vector|number) {
-        if (value instanceof Vector) {
-            this.x -= value.x;
-            this.y -= value.y;
-        }
-        else {
+    subtract(value: IVector|number) {
+        if (typeof(value) == "number") {
             this.x -= value;
             this.y -= value;
         }
+        else {
+            this.x -= value.x;
+            this.y -= value.y;
+        }
     }
 
-    subtracted(value: Vector): Vector;
+    subtracted(value: IVector): Vector;
     subtracted(value: number): Vector;
 
-    subtracted(value: Vector|number) {
+    subtracted(value: IVector|number) {
         let vector = this.clone();
-        vector.subtract(value as Vector);
+        vector.subtract(value as IVector);
         return vector;
     }
 
-    multiply(value: Vector): void;
+    multiply(value: IVector): void;
     multiply(value: number): void;
 
-    multiply(value: Vector|number) {
-        if (value instanceof Vector) {
-            this.x *= value.x;
-            this.y *= value.y;
-        }
-        else {
+    multiply(value: IVector|number) {
+        if (typeof(value) == "number") {
             this.x *= value;
             this.y *= value;
         }
+        else {
+            this.x *= value.x;
+            this.y *= value.y;
+        }
     }
 
-    multiplied(value: Vector): Vector;
+    multiplied(value: IVector): Vector;
     multiplied(value: number): Vector;
 
-    multiplied(value: Vector|number) {
+    multiplied(value: IVector|number) {
         let vector = this.clone();
-        vector.multiply(value as Vector);
+        vector.multiply(value as IVector);
         return vector;   
     }
 
-    divide(value: Vector): void;
+    divide(value: IVector): void;
     divide(value: number): void;
 
-    divide(value: Vector|number) {
-        if (value instanceof Vector) {
-            this.x /= value.x;
-            this.y /= value.y;
-        }
-        else {
+    divide(value: IVector|number) {
+        if (typeof(value) == "number") {
             this.x /= value;
             this.y /= value;
         }
+        else {
+            this.x /= value.x;
+            this.y /= value.y;
+        }
     }
 
-    divided(value: Vector): Vector;
+    divided(value: IVector): Vector;
     divided(value: number): Vector;
 
-    divided(value: Vector|number) {
+    divided(value: IVector|number) {
         let vector = this.clone();
-        vector.divide(value as Vector);
+        vector.divide(value as IVector);
         return vector;   
     }
 
@@ -172,15 +179,15 @@ export class Vector implements IDrawable {
         return new Vector(translationX, translationY);
     }
     
-    distance(vector: Vector) {
+    distance(vector: IVector) {
         return this.subtracted(vector).length;
     }
 
-    dot(vector: Vector) {
+    dot(vector: IVector) {
         return this.x * vector.x + this.y * vector.y;
     }
 
-    cross(vector: Vector) {
+    cross(vector: IVector) {
         return this.x * vector.y - this.y * vector.x;
     }
 
