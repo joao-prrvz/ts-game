@@ -1,10 +1,12 @@
-import { Vector }from "../core/index.js";
-import type { Shape } from "../shapes/Shape.js";
+import { EventHandler, Vector }from "../core/index.js";
+import type { Shape } from "../shapes/index.js";
 import { CollisionTypes, type CollisionType }  from "./CollisionType.js";
 
 export class Collider {
     shape: Shape;
     collisionType: CollisionType = CollisionTypes.dynamic;
+    bodyEnter = new EventHandler<Collider, { collider: Collider }>();
+    bodyLeave = new EventHandler<Collider, { collider: Collider }>();
     velocity = Vector.zero;
 
     get position() { return this.shape.position; }
@@ -16,6 +18,14 @@ export class Collider {
     constructor(shape: Shape) {
         this.shape = shape;
         this.shape.color = "red";
+    }
+    
+    onbodyenter(collider: Collider) {
+        this.bodyEnter.invoke(this, {collider});
+    }
+
+    onbodyleave(collider: Collider) {
+        this.bodyLeave.invoke(this, {collider});
     }
 
     update(deltaTime: number) {

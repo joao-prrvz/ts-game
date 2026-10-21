@@ -1,9 +1,9 @@
 import type { Enum } from "../core/Enum.js";
 
 export const CollisionTypes = {
-    static: 0,
-    dynamic: 1,
-    transparent : 2
+    static: "static",
+    dynamic: "dynamic",
+    transparent : "transparent"
 } as const;
 
 export type CollisionType = Enum<typeof CollisionTypes>;

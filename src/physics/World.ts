@@ -7,7 +7,8 @@ import { CollisionTypes } from "./CollisionType.js";
 
 export class World extends ObjectManager<Collider> {
 
-    #collidersArray: Collider[] = []
+    #collidersArray: Collider[] = [];
+    #collisions = new Map<Collider, Set<Collider>>();
 
     update(deltaTime: number) {
         for (let i = 0; i < 5; i++) {
@@ -41,8 +42,22 @@ export class World extends ObjectManager<Collider> {
                     else if (col2.shape instanceof Circle)
                         vector = Collisions.intersectCirclePolygon(col2.shape, col1.shape);
                 }
-                if (vector != null)
+                if (vector != null) {
                     this.#resolve(col1, col2, vector);
+                    let colliders = this.#collisions.get(col1) ?? new Set<Collider>();
+                    colliders.add(col2);
+                    this.#collisions.set(col1, colliders);
+                }
+                else {
+                    let colliders = this.#collisions.get(col1) ?? null;
+                    if (colliders == null || !colliders.has(col2))
+                        continue;
+                    if (col1.collisionType == CollisionTypes.transparent)
+                        col1.onbodyleave(col2);
+                    if (col2.collisionType == CollisionTypes.transparent)
+                        col2.onbodyleave(col1);
+                    colliders.delete(col2);
+                }
             }
         }
     }
@@ -53,12 +68,10 @@ export class World extends ObjectManager<Collider> {
     }
     
     #resolve(col1: Collider, col2: Collider, vector: Vector) {
-        if (col1.collisionType == CollisionTypes.static && col2.collisionType == CollisionTypes.dynamic) {
+        if (col1.collisionType == CollisionTypes.static && col2.collisionType == CollisionTypes.dynamic)
             col2.position.subtract(vector);
-        }
-        else if (col1.collisionType == CollisionTypes.dynamic && col2.collisionType == CollisionTypes.static) {
+        else if (col1.collisionType == CollisionTypes.dynamic && col2.collisionType == CollisionTypes.static)
             col1.position.add(vector);
-        }
         else if (
             (col1.collisionType == CollisionTypes.dynamic && col2.collisionType == CollisionTypes.dynamic)
             || (col1.collisionType == CollisionTypes.static && col2.collisionType == CollisionTypes.static)
@@ -66,6 +79,13 @@ export class World extends ObjectManager<Collider> {
             col1.position.add(vector.divided(2));
             col2.position.subtract(vector.divided(2));
         }
+        let colliders = this.#collisions.get(col1) ?? null;
+        if (colliders != null && colliders.has(col2))
+            return;
+        if (col1.collisionType == CollisionTypes.transparent)
+            col1.onbodyenter(col2);
+        if (col2.collisionType == CollisionTypes.transparent)
+            col2.onbodyenter(col1);
     }
     
 }
