@@ -1,26 +1,24 @@
 import { Resource } from "./Resource.js";
 
 
-export class Audio extends Resource {
-    data: AudioBuffer|null = null;
-    #loading = false;
+export class Audio extends Resource<AudioBuffer> {
     #url: string; 
-    constructor(url: string) {
+
+    constructor(url: string, autoLoad = true) {
         super();
         this.#url = url;
-    }
-
-    isLoaded(): this is { data: AudioBuffer } { 
-        return this.data !== null; 
+        if (autoLoad)
+            this.loadAsync();
     }
     
-    async load() {
-        if (this.#loading)
-            return;
-        this.#loading = true;
+    async loadAsync() {
+        if (this.loading)
+            return this.waitForLoad();
+        this.loading = true;
         let response = await fetch(this.#url);
         let buffer = await response.arrayBuffer();
         let audioContext = new AudioContext();
         this.data = await audioContext.decodeAudioData(buffer);
+        this.onload();
     }
 }
