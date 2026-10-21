@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+        @font-face {
+            font-family: "determination";
+            src: url("./assets/determination.ttf");
+        }
         body {
             margin: 0;
             padding: 0;
@@ -12,15 +16,21 @@
             justify-content: center;
             align-items: center;
             background-color: purple;
+            font-family: determination;
         }
         canvas {
+            z-index: -1;
             image-rendering: pixelated;
             background-color: gray;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
     </style>
 </head>
 <body>
-    <canvas width="101" height="101"></canvas>
+    <canvas width="200" height="200"></canvas>
 </body> 
 <script src="./script.js" type="module"></script>
 </html>
