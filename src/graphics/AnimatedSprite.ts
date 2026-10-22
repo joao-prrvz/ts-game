@@ -24,7 +24,7 @@ export class AnimatedSprite extends Sprite {
         super(src as Texture);
         this.columns = columns;
         this.rows = rows;
-        this.#timer.tick.add(this.timerOntick.bind(this));
+        this.#timer.tick.add(this.timerOntick, this);
     }
 
     timerOntick() {

@@ -1,18 +1,18 @@
 type EventListener<T, U> = (sender: T, args: U) => void;
 
 export class EventHandler<T, U = void> {
-    #listeners: EventListener<T, U>[] = [];
+    #listeners = new Map<EventListener<T, U>, EventListener<T, U>>() ;
 
     invoke(sender: T, args: U) {
-        for (const listener of this.#listeners)
+        for (const [key, listener] of this.#listeners)
             listener(sender, args);
     }
 
-    add(...items: EventListener<T, U>[]) {
-        this.#listeners.push(...items);
+    add(listener: EventListener<T, U>, owner: object|null = null) {
+        this.#listeners.set(listener, listener.bind(owner));
     }
 
-    remove(...items: EventListener<T, U>[]) {
-        this.#listeners = this.#listeners.filter(l => !items.includes(l));
+    remove(item: EventListener<T, U>) {
+        this.#listeners.delete(item);
     }
 }
