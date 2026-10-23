@@ -24,23 +24,28 @@ export abstract class BaseGame {
     }
 
     async start() {
-        let now = performance.now();
+        let previousTime = performance.now();
+
         while (true) {
-            let prev = now;
-            let delay = this.#getFrameDelay(prev);
-            let interval = this.targetFps != 0 ? 1000 / this.targetFps : 0;
-            this.update(delay);
+            const frameStart = performance.now();
+            const deltaTime = frameStart - previousTime;
+            previousTime = frameStart;
+
+            this.update(deltaTime);
             this.draw(this.ctx);
 
-            delay = this.#getFrameDelay(prev);
-            if (delay < interval)
-                await this.#sleep(interval - delay);
-            else if (interval == 0)
-                await this.#sleep(0);
+            const frameDuration = performance.now() - frameStart;
+            const frameInterval = this.targetFps > 0
+                ? 1000 / this.targetFps
+                : 0;
 
-            delay = this.#getFrameDelay(prev);
-            this.#currentFps = 1000 / delay;
-            now = performance.now();
+            if (frameDuration < frameInterval) {
+                await this.#sleep(frameInterval - frameDuration);
+            } else if (frameInterval === 0) {
+                await this.#sleep(0);
+            }
+
+            this.#currentFps = 1000 / (performance.now() - frameStart);
         }
     }
     

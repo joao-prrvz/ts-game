@@ -7,3 +7,4 @@ export { Vector } from "./Vector.js";
 export { EventHandler } from "./EventHandler.js";
 export { ObjectManager } from "./ObjectManager.js";
 export type { IVector } from "./IVector.js"
+export { Math } from "./Math.js";

@@ -11,6 +11,7 @@ export class World extends ObjectManager<Collider> {
     #collisions = new Map<Collider, Set<Collider>>();
 
     update(deltaTime: number) {
+        deltaTime /= 5;
         for (let i = 0; i < 5; i++) {
             super.update(deltaTime);
             let colliders = this.#collidersArray;
