@@ -1,6 +1,6 @@
-import { BaseGame } from "../dist/BaseGame.js";
-import { Vector, Button, World, Collider, InputManager, ControlManager, Label, Circle } from "../dist/index.js";
+import { BaseGame, World, ControlManager, Label } from "../dist/index.js";
 import { Resources } from "./Resources.js";
+import { SpearSpawner } from "./SpearSpawner.js";
 import { Ghost } from "./entities/Ghost.js";
 
 
@@ -8,7 +8,10 @@ export class Game extends BaseGame {
     world = new World();
     controlManager = new ControlManager(); 
     resources = new Resources();
-    coll = new Collider(new Circle(10));
+    score = 0;
+    #lblScore = new Label();
+    #lblHp = new Label();
+    #controlManager = new ControlManager();
 
     constructor() {
         super(document.querySelector("canvas").getContext("2d"));
@@ -16,18 +19,11 @@ export class Game extends BaseGame {
         this.ctx.imageSmoothingEnabled = false;
         this.ctx.lineWidth = 1;
         this.player = new Ghost(this, this.size.divided(2));
-        this.coll.collisionType = "transparent";
-        this.coll.bodyEnter.add(() => {
-            console.log("enter")
-            this.player.shape.style = "fill";
-        }
-        );
-        this.coll.bodyLeave.add(() =>  {
-            console.log("leave")
-            this.player.shape.style = "stroke";
-        }
-        );
-        this.world.add(this.player, this.coll);
+        this.spearSpawner = new SpearSpawner(this);
+        this.#lblScore.append();
+        this.#lblHp.append();
+        this.#controlManager.add(this.#lblScore, this.#lblHp);
+        this.world.add(this.player);
     }
 
     /**
@@ -35,9 +31,13 @@ export class Game extends BaseGame {
      */
     update(deltaTime) {
         super.update(deltaTime);
-        this.coll.position = InputManager.mouse.position;
         this.world.update(deltaTime);
-        
+        this.spearSpawner.update();
+        this.#lblScore.text = this.score;
+        this.#lblHp.text = this.player.hp;
+        this.#lblScore.position.x = 10;
+        this.#lblHp.position.x = 50;
+        this.#controlManager.update(deltaTime);
     }
 
     /**

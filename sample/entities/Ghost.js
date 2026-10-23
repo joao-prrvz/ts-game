@@ -1,9 +1,13 @@
-import { Vector, InputManager, Rectangle, AnimatedSprite } from "../../dist/index.js";
+import { Vector, InputManager, Rectangle, AnimatedSprite, CollisionTypes } from "../../dist/index.js";
 import { Game } from "../script.js";
 import { Entity } from "./Entity.js";
 import { Shield } from "./Shield.js";
+import { Spear } from "./Spear.js";
 
 export class Ghost extends Entity {
+
+    hp = 3;
+
     /** @type {AnimatedSprite} */
     get sprite() { return super.sprite; }
     set sprite(value) { super.sprite = value; }
@@ -15,6 +19,7 @@ export class Ghost extends Entity {
      */
     constructor(game, position) {
         super(game, new AnimatedSprite(game.resources.ghost, 7, 2), new Rectangle(16));
+        this.collisionType = CollisionTypes.transparent;
         this.sprite.add("idle", 0, 6, 8);
         this.sprite.play("idle");
         this.position = position;
@@ -22,6 +27,14 @@ export class Ghost extends Entity {
         this.shield.position = this.position
             .subtracted(new Vector(0, this.shape.height));
         game.world.add(this.shield);
+        this.bodyEnter.add(this.#onbodyenter, this);
+    }
+
+    #onbodyenter(sender, { collider }) {
+        if (collider instanceof Spear) {
+            this.game.world.remove(collider);
+            this.hp --;
+        }
     }
 
     update(deltaTime) {
@@ -30,7 +43,6 @@ export class Ghost extends Entity {
         let keyboard = InputManager.keyboard;
         let direction = Vector.zero;
         let angle = 0;
-        
         if (keyboard.isDown("w")) {
             direction = Vector.up;
             angle = 0;
@@ -53,7 +65,5 @@ export class Ghost extends Entity {
             this.shield.position = this.position
                 .added(direction.multiplied(this.shape.size));
         }
-
-
     }
 }
