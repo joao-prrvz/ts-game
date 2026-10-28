@@ -45,7 +45,7 @@ export class Collisions {
             let vb = vertices[(i + 1) % vertices.length]!;
 
             let edge = vb.subtracted(va);
-            let axis = new Vector(-edge.y, edge.x);
+            let axis = new Vector(-edge.y, edge.x).normalized();
 
             let { min: minA, max: maxA } = this.#projectVertices(vertices, axis);
             let { min: minB, max: maxB } = this.#projectCircle(circle, axis);
@@ -156,7 +156,7 @@ export class Collisions {
 
     static #projectVertices(vertices: Vector[], axis: Vector) {
         let min = Number.MAX_VALUE;
-        let max = Number.MIN_VALUE;
+        let max = -Number.MAX_VALUE;
 
         for (const vertice of vertices) {
             let proj = axis.dot(vertice);
